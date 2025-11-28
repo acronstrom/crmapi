@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM API Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+        }
+        
+        .endpoints {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .endpoint-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .endpoint-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .endpoint-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .endpoint-card p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .endpoint-card code {
+            display: block;
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+        
+        .result-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+        }
+        
+        .result-container.active {
+            display: block;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .result-header h2 {
+            color: #667eea;
+        }
+        
+        .close-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .close-btn:hover {
+            background: #5568d3;
+        }
+        
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 CRM API Demo</h1>
+            <p class="subtitle">Click on any endpoint below to view the data</p>
+        </header>
+        
+        <div class="endpoints">
+            <div class="endpoint-card" onclick="loadEndpoint('/api', 'API Info')">
+                <h3>📋 API Info</h3>
+                <p>Get API information and available endpoints</p>
+                <code>GET /api</code>
+            </div>
+            
+            <div class="endpoint-card" onclick="loadEndpoint('/api/contacts', 'Contacts')">
+                <h3>👥 Contacts</h3>
+                <p>View all CRM contacts with detailed information</p>
+                <code>GET /api/contacts</code>
+            </div>
+            
+            <div class="endpoint-card" onclick="loadEndpoint('/api/companies', 'Companies')">
+                <h3>🏢 Companies</h3>
+                <p>Browse company records and account details</p>
+                <code>GET /api/companies</code>
+            </div>
+            
+            <div class="endpoint-card" onclick="loadEndpoint('/api/deals', 'Deals')">
+                <h3>💰 Deals</h3>
+                <p>Track sales opportunities and pipeline value</p>
+                <code>GET /api/deals</code>
+            </div>
+            
+            <div class="endpoint-card" onclick="loadEndpoint('/api/activities', 'Activities')">
+                <h3>📅 Activities</h3>
+                <p>View meetings, calls, emails, and tasks</p>
+                <code>GET /api/activities</code>
+            </div>
+            
+            <div class="endpoint-card" onclick="loadEndpoint('/api/all', 'All Data')">
+                <h3>🎯 All Data</h3>
+                <p>Get complete CRM dataset with summary</p>
+                <code>GET /api/all</code>
+            </div>
+        </div>
+        
+        <div id="resultContainer" class="result-container">
+            <div class="result-header">
+                <h2 id="resultTitle">Results</h2>
+                <button class="close-btn" onclick="closeResults()">✕ Close</button>
+            </div>
+            <div id="resultContent"></div>
+        </div>
+    </div>
+    
+    <script>
+        async function loadEndpoint(endpoint, title) {
+            const container = document.getElementById('resultContainer');
+            const content = document.getElementById('resultContent');
+            const titleEl = document.getElementById('resultTitle');
+            
+            titleEl.textContent = title;
+            content.innerHTML = '<div class="loading">Loading...</div>';
+            container.classList.add('active');
+            container.scrollIntoView({ behavior: 'smooth' });
+            
+            try {
+                const response = await fetch(endpoint);
+                const data = await response.json();
+                content.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (error) {
+                content.innerHTML = `<pre style="color: #ff6b6b;">Error: ${error.message}</pre>`;
+            }
+        }
+        
+        function closeResults() {
+            document.getElementById('resultContainer').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
+
