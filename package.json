@@ -1,5 +1,5 @@
 {
-  "name": "crm-api",
+  "name": "crmapi",
   "version": "1.0.0",
   "description": "REST API for mock CRM data",
   "main": "api/index.js",
