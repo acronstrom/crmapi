@@ -172,13 +172,23 @@ const mockContacts = [
 ];
 
 module.exports = (req, res) => {
-  const { id, status, company } = req.query;
+  const { id, status, company, email } = req.query;
   
   let filteredContacts = mockContacts;
   
   // Filter by ID if provided
   if (id) {
     const contact = mockContacts.find(c => c.id === parseInt(id));
+    return res.status(contact ? 200 : 404).json(
+      contact || { error: "Contact not found" }
+    );
+  }
+  
+  // Filter by email if provided
+  if (email) {
+    const contact = mockContacts.find(c => 
+      c.email.toLowerCase() === email.toLowerCase()
+    );
     return res.status(contact ? 200 : 404).json(
       contact || { error: "Contact not found" }
     );
