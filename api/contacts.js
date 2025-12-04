@@ -168,6 +168,23 @@ const mockContacts = [
     createdAt: "2024-05-10T10:00:00Z",
     avatar: "https://i.pravatar.cc/150?img=52",
     notes: "Cancelled service last month due to moving. Expressed interest in reconnecting at new address. Should follow up with coverage check."
+  },
+  {
+    id: 10011,
+    firstName: "Andreas",
+    lastName: "Cronström",
+    email: "andreas.cronstrom@puzzel.com",
+    phone: "+46734488888",
+    company: "Residential Customer",
+    position: "Homeowner",
+    status: "active",
+    currentPlan: "Basic Plan - 100 Mbps",
+    monthlyRate: "$39.99",
+    tags: ["residential", "current-customer", "basic-plan", "puzzel-employee"],
+    lastContact: "2025-12-04T12:00:00Z",
+    createdAt: "2025-12-04T12:00:00Z",
+    avatar: "https://i.pravatar.cc/150?img=70",
+    notes: "New customer from Sweden. Basic plan perfect for home office and streaming needs. Puzzel employee."
   }
 ];
 
