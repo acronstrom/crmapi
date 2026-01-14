@@ -207,7 +207,7 @@ module.exports = (req, res) => {
       c.email.toLowerCase() === email.toLowerCase()
     );
     return res.status(contact ? 200 : 404).json(
-      contact || { error: "Contact not found" }
+      contact || { error: "No user found" }
     );
   }
   
