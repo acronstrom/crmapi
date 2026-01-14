@@ -206,9 +206,14 @@ module.exports = (req, res) => {
     const contact = mockContacts.find(c => 
       c.email.toLowerCase() === email.toLowerCase()
     );
-    return res.status(contact ? 200 : 404).json(
-      contact || { error: "No user found" }
-    );
+    if (contact) {
+      return res.status(200).json(contact);
+    }
+    return res.status(200).json({
+      total: 0,
+      data: [],
+      message: "no user found"
+    });
   }
   
   // Filter by status
